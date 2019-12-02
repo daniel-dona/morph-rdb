@@ -1,0 +1,80 @@
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBProperties - reading configuration file : examples-lingbm/lingbm.morph.properties
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunnerFactory - MorphBaseRunnerFactory running morph-rdb 3.9.14 ...
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.model.R2RMLMappingDocument$ - Parsing mapping document examples-lingbm/LinGBM.r2rml.ttl
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunnerFactory - Setting output to examples-lingbm/LinGBM.nt
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner - Materializing mapping document ...
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner - Materializing triples map TMProductTypeProduct
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBDataTranslator - Translating RDB data into RDF instances...
+[main] INFO es.upm.fi.dia.oeg.morph.base.DBUtility$ - Executing query ...
+[main] INFO es.upm.fi.dia.oeg.morph.base.DBUtility$ - Executing query:
+SELECT `T1`.`product` AS "T1_product",`T1`.`productType` AS "T1_productType",`T2`.`nr` AS "T2_nr",`T3`.`nr` AS "T3_nr",`T4`.`nr` AS "T4_nr"
+FROM producttypeproduct T1
+ LEFT JOIN producttype T2 ON (T1.productType = T2.nr)
+ LEFT JOIN (SELECT product.*, review.nr as review_nr FROM product inner join review on product.nr = review.product ) T3 ON (T1.product = T3.nr)
+ LEFT JOIN product T4 ON (T1.product = T4.nr)
+
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBDataTranslator - 100 instances retrieved.
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner - Materializing triples map TMCountry
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBDataTranslator - Translating RDB data into RDF instances...
+[main] INFO es.upm.fi.dia.oeg.morph.base.DBUtility$ - Executing query ...
+[main] INFO es.upm.fi.dia.oeg.morph.base.DBUtility$ - Executing query:
+SELECT `T5`.`code` AS "T5_code"
+FROM (SELECT country  AS "code"
+FROM person
+ ) T5
+
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBDataTranslator - 6 instances retrieved.
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner - Materializing triples map TMReview
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBDataTranslator - Translating RDB data into RDF instances...
+[main] INFO es.upm.fi.dia.oeg.morph.base.DBUtility$ - Executing query ...
+[main] INFO es.upm.fi.dia.oeg.morph.base.DBUtility$ - Executing query:
+SELECT `T6`.`nr` AS "T6_nr",`T6`.`reviewDate` AS "T6_reviewDate",`T7`.`nr` AS "T7_nr",`T6`.`publisher` AS "T6_publisher",`T6`.`text` AS "T6_text",`T8`.`nr` AS "T8_nr",`T6`.`language` AS "T6_language",`T9`.`product` AS "T9_product",`T9`.`productType` AS "T9_productType",`T6`.`title` AS "T6_title",`T6`.`rating2` AS "T6_rating2",`T10`.`nr` AS "T10_nr",`T6`.`rating4` AS "T6_rating4",`T6`.`rating3` AS "T6_rating3",`T6`.`publishDate` AS "T6_publishDate",`T6`.`rating1` AS "T6_rating1"
+FROM review T6
+ LEFT JOIN producer T7 ON (T6.producer = T7.nr)
+ LEFT JOIN person T8 ON (T6.person = T8.nr)
+ LEFT JOIN producttypeproduct T9 ON (T6.product = T9.product)
+ LEFT JOIN product T10 ON (T6.product = T10.nr)
+
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBDataTranslator - 100 instances retrieved.
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner - Materializing triples map TMProducerWithProducts
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBDataTranslator - Translating RDB data into RDF instances...
+[main] INFO es.upm.fi.dia.oeg.morph.base.DBUtility$ - Executing query ...
+[main] INFO es.upm.fi.dia.oeg.morph.base.DBUtility$ - Executing query:
+SELECT `T11`.`nr` AS "T11_nr",`T11`.`homepage` AS "T11_homepage",`T11`.`label` AS "T11_label",`T11`.`comment` AS "T11_comment",`T12`.`nr` AS "T12_nr",`T13`.`nr` AS "T13_nr",`T11`.`publishDate` AS "T11_publishDate",`code` AS "null_code",`T11`.`publisher` AS "T11_publisher"
+FROM (SELECT product.nr AS product, producer.* FROM producer INNER JOIN product WHERE producer.nr = product.producer ) T11
+ LEFT JOIN (SELECT product.*, review.nr as review_nr FROM product inner join review on product.nr = review.product ) T12 ON (T11.product = T12.nr)
+ LEFT JOIN product T13 ON (T11.product = T13.nr)
+ LEFT JOIN  ( SELECT country  AS "code"
+FROM person
+ ) `` ON (T11.country = .code)
+
+[main] ERROR es.upm.fi.dia.oeg.morph.base.DBUtility$ - Error while executing SQL Query: SELECT `T11`.`nr` AS "T11_nr",`T11`.`homepage` AS "T11_homepage",`T11`.`label` AS "T11_label",`T11`.`comment` AS "T11_comment",`T12`.`nr` AS "T12_nr",`T13`.`nr` AS "T13_nr",`T11`.`publishDate` AS "T11_publishDate",`code` AS "null_code",`T11`.`publisher` AS "T11_publisher"
+FROM (SELECT product.nr AS product, producer.* FROM producer INNER JOIN product WHERE producer.nr = product.producer ) T11
+ LEFT JOIN (SELECT product.*, review.nr as review_nr FROM product inner join review on product.nr = review.product ) T12 ON (T11.product = T12.nr)
+ LEFT JOIN product T13 ON (T11.product = T13.nr)
+ LEFT JOIN  ( SELECT country  AS "code"
+FROM person
+ ) `` ON (T11.country = .code)
+
+java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 7
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:118)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:95)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.StatementImpl.executeInternal(StatementImpl.java:790)
+	at com.mysql.cj.jdbc.StatementImpl.execute(StatementImpl.java:675)
+	at es.upm.fi.dia.oeg.morph.base.DBUtility$.execute(DBUtility.scala:76)
+	at es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBDataTranslator.generateRDFTriples(MorphRDBDataTranslator.scala:154)
+	at es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBDataTranslator.generateRDFTriples(MorphRDBDataTranslator.scala:349)
+	at es.upm.fi.dia.oeg.morph.base.engine.MorphBaseRunner$$anonfun$materializeMappingDocuments$1.apply(MorphBaseRunner.scala:111)
+	at es.upm.fi.dia.oeg.morph.base.engine.MorphBaseRunner$$anonfun$materializeMappingDocuments$1.apply(MorphBaseRunner.scala:108)
+	at scala.collection.immutable.HashSet$HashSet1.foreach(HashSet.scala:316)
+	at scala.collection.immutable.HashSet$HashTrieSet.foreach(HashSet.scala:972)
+	at scala.collection.immutable.HashSet$HashTrieSet.foreach(HashSet.scala:972)
+	at es.upm.fi.dia.oeg.morph.base.engine.MorphBaseRunner.materializeMappingDocuments(MorphBaseRunner.scala:108)
+	at es.upm.fi.dia.oeg.morph.base.engine.MorphBaseRunner.run(MorphBaseRunner.scala:151)
+	at es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner$.main(MorphRDBRunner.scala:78)
+	at es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner.main(MorphRDBRunner.scala)
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner - Running time = 444 ms.
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner - errorCode = -1
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner - status = You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 7
+[main] INFO es.upm.fi.dia.oeg.morph.r2rml.rdb.engine.MorphRDBRunner - **********************DONE****************************
